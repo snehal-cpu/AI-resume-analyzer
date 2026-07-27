@@ -7,7 +7,23 @@ function analyzeResumeAI($resumeText)
 {
 
 
-   $apiKey = $_ENV['GEMINI_API_KEY'];
+  $apiKey = "";
+  if(empty($apiKey))
+{
+    return json_encode([
+        "status" => "AI Disabled",
+        "strengths" => [
+            "Resume uploaded successfully",
+            "Resume text extracted successfully"
+        ],
+        "weaknesses" => [
+            "Gemini API key not configured"
+        ],
+        "suggestions" => [
+            "Add Gemini API key to enable AI suggestions"
+        ]
+    ]);
+}
    $model = "gemini-3.6-flash";
 
 
