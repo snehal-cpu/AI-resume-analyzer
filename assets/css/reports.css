@@ -1,0 +1,592 @@
+/* ==============================
+   AI Resume Analyzer
+   Premium Reports CSS
+============================== */
+
+
+*
+{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+
+body
+{
+    background:
+    linear-gradient(
+    135deg,
+    #061426,
+    #102a43
+    );
+
+    color:white;
+    min-height:100vh;
+}
+
+
+
+
+
+
+/* ================= SIDEBAR ================= */
+
+
+.sidebar
+{
+    position:fixed;
+
+    left:0;
+    top:0;
+
+    width:260px;
+
+    height:100vh;
+
+    background:#071522;
+
+    padding:25px;
+
+    box-shadow:
+    5px 0 25px rgba(0,0,0,.4);
+
+    z-index:1000;
+}
+
+
+
+.logo
+{
+    font-size:24px;
+
+    font-weight:700;
+
+    color:white;
+
+    margin-bottom:45px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+
+.logo i
+{
+    color:#00c6ff;
+
+    font-size:28px;
+}
+
+
+
+
+.sidebar ul
+{
+    list-style:none;
+
+    padding:0;
+}
+
+
+
+.sidebar ul li
+{
+    margin-bottom:12px;
+}
+
+
+
+.sidebar ul li a
+{
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:14px 18px;
+
+    color:#cbd5e1;
+
+    text-decoration:none;
+
+    border-radius:14px;
+
+    transition:.3s;
+
+}
+
+
+
+.sidebar ul li a:hover,
+.sidebar ul li.active a
+{
+
+    background:
+    linear-gradient(
+    135deg,
+    #0066ff,
+    #00c6ff
+    );
+
+    color:white;
+
+    box-shadow:
+    0 10px 25px rgba(0,198,255,.25);
+
+}
+
+
+
+
+
+
+
+/* ================= MAIN ================= */
+
+
+.main
+{
+    margin-left:260px;
+
+    padding:40px;
+}
+
+
+
+
+
+
+
+/* ================= HEADER ================= */
+
+
+.page-title
+{
+    margin-bottom:35px;
+}
+
+
+.page-title h2
+{
+    font-size:38px;
+
+    font-weight:700;
+
+    color:#00c6ff;
+}
+
+
+.page-title p
+{
+    margin-top:10px;
+
+    color:#cbd5e1;
+
+    font-size:16px;
+}
+
+
+
+
+
+
+
+
+
+/* ================= STAT CARDS ================= */
+
+
+.stat-card
+{
+    background:
+
+    rgba(16,42,67,.95);
+
+
+    border-radius:22px;
+
+
+    padding:30px;
+
+
+    text-align:center;
+
+
+    border:
+
+    1px solid rgba(255,255,255,.08);
+
+
+    box-shadow:
+
+    0 20px 40px rgba(0,0,0,.3);
+
+
+    transition:.35s;
+
+}
+
+
+
+.stat-card:hover
+{
+    transform:
+    translateY(-8px);
+
+
+    box-shadow:
+
+    0 25px 50px rgba(0,198,255,.25);
+
+}
+
+
+
+
+.stat-card h3
+{
+    font-size:42px;
+
+    color:#00c6ff;
+
+    font-weight:700;
+}
+
+
+
+.stat-card p
+{
+    margin-top:10px;
+
+    color:#cbd5e1;
+
+    font-size:15px;
+}
+
+
+
+
+
+
+
+
+
+/* ================= SEARCH ================= */
+
+
+.search-box
+{
+    position:relative;
+
+    margin:40px 0;
+}
+
+
+
+.search-box input
+{
+    width:100%;
+
+
+    padding:17px 25px 17px 60px;
+
+
+    border:none;
+
+
+    outline:none;
+
+
+    border-radius:18px;
+
+
+    background:#071522;
+
+
+    color:white;
+
+
+    font-size:16px;
+
+
+    box-shadow:
+
+    0 10px 30px rgba(0,0,0,.3);
+
+}
+
+
+
+.search-box input::placeholder
+{
+    color:#94a3b8;
+}
+
+
+
+.search-box i
+{
+    position:absolute;
+
+    left:25px;
+
+    top:19px;
+
+    color:#00c6ff;
+
+}
+
+
+
+
+
+
+
+
+/* ================= TABLE ================= */
+
+
+.table-card
+{
+    background:#102a43;
+
+
+    border-radius:25px;
+
+
+    padding:30px;
+
+
+    box-shadow:
+
+    0 20px 50px rgba(0,0,0,.35);
+
+
+    overflow:hidden;
+}
+
+
+
+.table
+{
+    margin:0;
+}
+
+
+
+.table thead th
+{
+    background:#071522;
+
+
+    color:#00c6ff;
+
+
+    border:none;
+
+
+    padding:18px;
+
+
+    font-size:15px;
+}
+
+
+
+.table tbody td
+{
+    padding:20px;
+
+
+    color:#e2e8f0;
+
+
+    border-color:
+
+    rgba(255,255,255,.05);
+}
+
+
+
+.table tbody tr
+{
+    transition:.3s;
+}
+
+
+
+.table tbody tr:hover
+{
+    background:
+
+    rgba(0,198,255,.08);
+
+}
+
+
+
+
+
+
+
+/* ================= STATUS BADGE ================= */
+
+
+.badge
+{
+    padding:8px 16px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+}
+
+
+
+
+
+
+
+/* ================= BUTTONS ================= */
+
+
+.btn-primary
+{
+    border:none;
+
+    border-radius:12px;
+
+    padding:9px 18px;
+
+
+    background:
+
+    linear-gradient(
+    135deg,
+    #0066ff,
+    #00c6ff
+    );
+
+
+    transition:.3s;
+
+}
+
+
+
+.btn-primary:hover
+{
+    transform:
+    translateY(-3px);
+
+
+    box-shadow:
+
+    0 10px 25px rgba(0,198,255,.35);
+
+}
+
+
+
+.btn-danger
+{
+    border-radius:12px;
+}
+
+
+
+
+
+/* ================= EMPTY ================= */
+
+
+.table td[colspan]
+{
+    padding:50px;
+
+    color:#94a3b8;
+
+}
+
+
+
+
+
+
+
+
+/* ================= RESPONSIVE ================= */
+
+
+@media(max-width:992px)
+{
+
+
+.sidebar
+{
+    width:80px;
+}
+
+
+.logo span
+{
+    display:none;
+}
+
+
+
+.sidebar ul li a span
+{
+    display:none;
+}
+
+
+
+.main
+{
+    margin-left:80px;
+}
+
+
+}
+
+
+
+@media(max-width:768px)
+{
+
+
+.main
+{
+    padding:20px;
+}
+
+
+.page-title h2
+{
+    font-size:28px;
+}
+
+
+
+.table-card
+{
+    overflow-x:auto;
+}
+
+
+
+.table
+{
+    min-width:800px;
+}
+
+
+}
