@@ -197,31 +197,27 @@ $hashed_password = password_hash(
 // INSERT USER
 // =========================
 
-
 $stmt = mysqli_prepare(
     $conn,
     "INSERT INTO users
     (
         fullname,
         email,
-        phone,
         password
     )
     VALUES
-    (?,?,?,?)"
+    (?,?,?)"
 );
-
-
 
 mysqli_stmt_bind_param(
     $stmt,
-    "ssss",
+    "sss",
     $fullname,
     $email,
-    $phone,
     $hashed_password
 );
 
+  
 
 
 

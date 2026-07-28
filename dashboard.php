@@ -91,25 +91,44 @@ $totalResume=$row['total'];
 
 // ================= ATS SCORE =================
 
-
-$averageATS=0;
-
+$averageATS = 0;
 
 $stmt=mysqli_prepare(
 $conn,
 "
-SELECT AVG(ra.ats_score) score
+SELECT AVG(a.score) score
 
-FROM resume_analysis ra
+FROM analysis a
 
 JOIN resumes r
 
-ON ra.resume_id=r.id
+ON a.resume_id=r.id
 
 WHERE r.user_id=?
 "
 );
 
+
+mysqli_stmt_bind_param(
+$stmt,
+"i",
+$user_id
+);
+
+
+mysqli_stmt_execute($stmt);
+
+
+$result=mysqli_stmt_get_result($stmt);
+
+
+$row=mysqli_fetch_assoc($result);
+
+
+if($row['score'] != NULL)
+{
+    $averageATS = round($row['score']);
+}
 
 mysqli_stmt_bind_param(
 $stmt,
