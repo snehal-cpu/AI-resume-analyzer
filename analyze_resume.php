@@ -44,41 +44,16 @@ if($resume_id <= 0)
 // ================= FETCH RESUME =================
 
 
-$stmt = mysqli_prepare(
-    $conn,
-    "
-    SELECT *
-    FROM resumes
-    WHERE id=? 
-    AND user_id=?
-    "
-);
 
 
+$sql = "SELECT * FROM resumes WHERE id = $resume_id";
+$result = mysqli_query($conn, $sql);
 
-mysqli_stmt_bind_param(
-    $stmt,
-    "ii",
-    $resume_id,
-    $user_id
-);
-
-
-
-mysqli_stmt_execute($stmt);
-
-
-
-$result = mysqli_stmt_get_result($stmt);
-
-
-
-if(mysqli_num_rows($result)==0)
-{
-    die("Resume not found");
+if (!$result) {
+    die("SQL Error: " . mysqli_error($conn));
 }
 
-
+ 
 
 $resume = mysqli_fetch_assoc($result);
 
@@ -91,25 +66,23 @@ $resume = mysqli_fetch_assoc($result);
 // ================= FILE PATH =================
 
 
+// ================= FILE PATH =================
+
 $file = $resume['resume_path'];
 
-
-
-if(empty($file))
-{
+if (empty($file)) {
     die("Resume file path missing");
 }
 
+// Build the absolute path
+$absolutePath = __DIR__ . DIRECTORY_SEPARATOR . $file;
 
 
-if(!file_exists($file))
-{
-    die("Resume file not found");
+if (!file_exists($absolutePath)) {
+    die("Resume file not found.");
 }
 
-
-
-
+$file = $absolutePath;
 
 
 // ================= EXTRACT TEXT =================

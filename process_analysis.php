@@ -296,16 +296,11 @@ if(mysqli_stmt_execute($stmt))
 
     // Get analysis table ID
 
-    $analysis_id = mysqli_insert_id($conn);
+  
+header("Location: result.php?resume_id=" . $resume_id);
+exit();
 
-
-
-    // Redirect to report page
-
-    header(
-        "Location: result.php?resume_id=".$analysis_id
-    );
-
+   
 
     exit();
 

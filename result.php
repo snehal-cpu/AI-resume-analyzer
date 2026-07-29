@@ -1,62 +1,72 @@
 <?php
-
 session_start();
 
 require_once "config/db.php";
 
-
-// ================= LOGIN CHECK =================
-
-if(!isset($_SESSION['user_id']))
-{
+// Login check
+if (!isset($_SESSION['user_id'])) {
     header("Location: auth/login.php");
     exit();
 }
 
-
-// ================= GET ANALYSIS ID =================
-
-if(isset($_GET['resume_id']))
-{
-    $analysis_id = intval($_GET['resume_id']);
-}
-elseif(isset($_GET['id']))
-{
-    $analysis_id = intval($_GET['id']);
-}
-else
-{
+// Check Resume ID
+if (!isset($_GET['resume_id'])) {
     die("Resume ID missing");
 }
 
+$resume_id = intval($_GET['resume_id']);
 
-
-if($analysis_id <= 0)
-{
+if ($resume_id <= 0) {
     die("Invalid Resume ID");
 }
 
+// Prepare query
+$sql = "SELECT * FROM resume_analysis WHERE resume_id = ? LIMIT 1";
 
+$stmt = mysqli_prepare($conn, $sql);
 
+if (!$stmt) {
+    die("Prepare failed: " . mysqli_error($conn));
+}
+
+mysqli_stmt_bind_param($stmt, "i", $resume_id);
+
+mysqli_stmt_execute($stmt);
+
+$result = mysqli_stmt_get_result($stmt);
+
+$analysis = mysqli_fetch_assoc($result);
+
+if (!$analysis) {
+    die("Analysis report not found");
+}
 // ================= FETCH ANALYSIS =================
-
 
 $stmt = mysqli_prepare(
     $conn,
     "
     SELECT *
     FROM resume_analysis
-    WHERE id=?
+    WHERE resume_id = ?
+    LIMIT 1
     "
 );
-
 
 mysqli_stmt_bind_param(
     $stmt,
     "i",
-    $analysis_id
+    $resume_id
 );
 
+mysqli_stmt_execute($stmt);
+
+$result = mysqli_stmt_get_result($stmt);
+
+$analysis = mysqli_fetch_assoc($result);
+
+if (!$analysis) {
+    die("Analysis report not found");
+}
 
 mysqli_stmt_execute($stmt);
 
