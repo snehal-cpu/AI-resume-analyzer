@@ -86,7 +86,7 @@ required>
         name="confirm_password"
         class="form-control"
         required>
-</div>+
+</div>
 
 <button class="btn btn-primary w-100">
 

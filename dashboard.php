@@ -93,22 +93,17 @@ $totalResume=$row['total'];
 
 $averageATS = 0;
 
-$stmt=mysqli_prepare(
-$conn,
+$stmt = mysqli_prepare($conn,
 "
-SELECT AVG(a.score) score
-
-FROM analysis a
-
+SELECT AVG(a.score)
+FROM resume_analysis a
 JOIN resumes r
-
-ON a.resume_id=r.id
-
-WHERE r.user_id=?
-"
-);
-
-
+ON a.resume_id = r.id
+WHERE r.user_id = ?
+");
+if (!$stmt) {
+    die("Prepare failed: " . mysqli_error($conn));
+}
 mysqli_stmt_bind_param(
 $stmt,
 "i",
