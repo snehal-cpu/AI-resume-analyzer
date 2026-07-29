@@ -138,11 +138,7 @@ required
 
 </div>
 
-<div class="text-end mt-2">
-    <a href="forgot_password.php" class="text-decoration-none">
-        Forgot Password?
-    </a>
-</div>
+
 
 
 <button
