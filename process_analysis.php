@@ -16,9 +16,13 @@ if(!isset($_SESSION['user_id']))
 }
 
 
-// ================= CHECK DATA =================
 
-if(!isset($_POST['resume_text']) || !isset($_POST['resume_id']))
+// ================= CHECK INPUT =================
+
+if(
+    !isset($_POST['resume_id']) ||
+    !isset($_POST['resume_text'])
+)
 {
     die("Resume data missing");
 }
@@ -30,6 +34,12 @@ $resumeText = trim($_POST['resume_text']);
 
 
 
+if($resume_id <= 0)
+{
+    die("Invalid Resume ID");
+}
+
+
 if(empty($resumeText))
 {
     die("Resume text empty");
@@ -37,160 +47,167 @@ if(empty($resumeText))
 
 
 
-// ================= ATS ENGINE =================
+
+
+// ================= ATS ANALYSIS =================
+
 
 $ats = calculateATS($resumeText);
 
-$atsScore = $ats['ats_score'];
 
-// ================= GEMINI AI =================
+$atsScore = intval(
+    $ats['ats_score'] ?? 0
+);
+
+
+
+
+
+
+// ================= GEMINI AI ANALYSIS =================
+
 
 $aiResult = analyzeResumeAI($resumeText);
 
-// If Gemini fails, use local defaults
 
-if(isset($aiResult['error']))
+
+
+// Gemini failed fallback
+
+if(
+    !is_array($aiResult) ||
+    isset($aiResult['error'])
+)
 {
+
     $aiResult = [
 
         "strengths"=>[
-            "Resume analyzed successfully.",
-            "ATS score generated locally."
+            "Resume analyzed successfully",
+            "ATS score generated"
         ],
+
 
         "weaknesses"=>[
-            "AI service unavailable."
+            "AI suggestions unavailable"
         ],
 
-        "missing_skills"=>$ats['missing_skills'],
+
+        "missing_skills"=>
+        $ats['missing_skills'] ?? [],
+
 
         "suggestions"=>[
-            "Add more technical skills.",
-            "Improve project descriptions.",
-            "Include certifications."
+            "Add measurable achievements",
+            "Improve project descriptions",
+            "Add relevant certifications"
         ],
+
 
         "job_roles"=>[
-            "Software Developer"
+            "Software Developer",
+            "Web Developer"
         ],
+
 
         "interview_questions"=>[
-            "Explain your projects."
+            "Explain your major projects",
+            "Describe your technical skills"
         ],
 
-        "improved_resume"=>"Improve your resume by adding achievements and technical skills."
+
+        "improved_resume"=>
+        "Improve your resume by adding skills, projects and achievements."
 
     ];
+
 }
 
 
 
-// ================= CONVERT ARRAYS =================
 
 
+// ================= ARRAY TO TEXT =================
 
-$strengths = "";
 
-if(isset($aiResult['strengths']))
+function arrayToText($data)
 {
-    $strengths = implode(
-        "\n",
-        $aiResult['strengths']
-    );
-}
+
+    if(is_array($data))
+    {
+        return implode("\n",$data);
+    }
 
 
+    return $data ?? "";
 
-$weaknesses = "";
-
-if(isset($aiResult['weaknesses']))
-{
-    $weaknesses = implode(
-        "\n",
-        $aiResult['weaknesses']
-    );
 }
 
 
 
 
-$missingSkills = "";
-
-if(isset($aiResult['missing_skills']))
-{
-    $missingSkills = implode(
-        "\n",
-        $aiResult['missing_skills']
-    );
-}
+$strengths =
+arrayToText(
+    $aiResult['strengths'] ?? []
+);
 
 
 
-
-
-$suggestions = "";
-
-if(isset($aiResult['suggestions']))
-{
-    $suggestions = implode(
-        "\n",
-        $aiResult['suggestions']
-    );
-}
+$weaknesses =
+arrayToText(
+    $aiResult['weaknesses'] ?? []
+);
 
 
 
-
-
-$jobRoles = "";
-
-if(isset($aiResult['job_roles']))
-{
-    $jobRoles = implode(
-        "\n",
-        $aiResult['job_roles']
-    );
-}
+$missingSkills =
+arrayToText(
+    $aiResult['missing_skills'] ?? []
+);
 
 
 
+$suggestions =
+arrayToText(
+    $aiResult['suggestions'] ?? []
+);
 
 
-$interviewQuestions = "";
 
-if(isset($aiResult['interview_questions']))
-{
-    $interviewQuestions = implode(
-        "\n",
-        $aiResult['interview_questions']
-    );
-}
+$jobRoles =
+arrayToText(
+    $aiResult['job_roles'] ?? []
+);
+
+
+
+$interviewQuestions =
+arrayToText(
+    $aiResult['interview_questions'] ?? []
+);
+
+
+
+$improvedResume =
+$aiResult['improved_resume'] ?? "";
 
 
 
 
 
-$improvedResume = "";
-
-if(isset($aiResult['improved_resume']))
-{
-    $improvedResume =
-    $aiResult['improved_resume'];
-}
 
 
-
-
-// ================= DELETE OLD ANALYSIS =================
-// Prevent duplicate reports
+// ================= REMOVE OLD REPORT =================
 
 
 $delete = mysqli_prepare(
     $conn,
-
-    "DELETE FROM resume_analysis
-     WHERE resume_id=?"
+    "
+    DELETE FROM resume_analysis
+    WHERE resume_id=?
+    "
 );
+
 
 
 mysqli_stmt_bind_param(
@@ -200,13 +217,16 @@ mysqli_stmt_bind_param(
 );
 
 
+
 mysqli_stmt_execute($delete);
 
 
 
 
 
-// ================= SAVE ANALYSIS =================
+
+
+// ================= INSERT NEW REPORT =================
 
 
 $query = "
@@ -269,15 +289,23 @@ $improvedResume
 
 
 
+
 if(mysqli_stmt_execute($stmt))
 {
+
+
+    // Get analysis table ID
 
     $analysis_id = mysqli_insert_id($conn);
 
 
+
+    // Redirect to report page
+
     header(
-        "Location: result.php?id=".$analysis_id
+        "Location: result.php?resume_id=".$analysis_id
     );
+
 
     exit();
 
@@ -286,8 +314,10 @@ if(mysqli_stmt_execute($stmt))
 else
 {
 
-    echo "Database Error : ".
-    mysqli_error($conn);
+    die(
+        "Database Error : ".
+        mysqli_error($conn)
+    );
 
 }
 

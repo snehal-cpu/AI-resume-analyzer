@@ -788,7 +788,7 @@ Needs Improvement
 
 <a
 
-href="result.php?id=<?php echo $row['analysis_id']; ?>"
+href="result.php?resume_id=<?php echo $row['analysis_id']; ?>"
 
 class="btn btn-primary btn-sm">
 
@@ -819,7 +819,7 @@ Not Analyzed
 
 <a
 
-href="delete_report.php?id=<?php echo $row['resume_id']; ?>"
+href="delete_reports.php?id=<?php echo $row['resume_id']; ?>"
 
 class="btn btn-danger btn-sm">
 
