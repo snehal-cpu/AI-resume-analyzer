@@ -1,1 +1,0 @@
-# F-G3-AI-resume-analyzer
