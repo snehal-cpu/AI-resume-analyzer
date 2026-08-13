@@ -3,85 +3,118 @@
 session_start();
 
 require_once __DIR__ . "/config/db.php";
-
 require_once __DIR__ . "/vendor/autoload.php";
-
 
 use Dompdf\Dompdf;
 
 
-/* =========================
-LOGIN CHECK
-========================= */
+// =========================
+// LOGIN CHECK
+// =========================
 
-if(!isset($_SESSION['user_id']))
-{
+if (!isset($_SESSION['user_id'])) {
     header("Location: auth/login.php");
     exit();
 }
 
+$user_id = $_SESSION['user_id'];
 
 
-/* =========================
-GET ANALYSIS ID
-========================= */
+// =========================
+// GET ANALYSIS ID
+// =========================
 
-if(!isset($_GET['id']))
-{
+if (!isset($_GET['id'])) {
     die("Analysis ID missing");
 }
 
+$analysis_id = intval($_GET['id']);
 
-$id = intval($_GET['id']);
+if ($analysis_id <= 0) {
+    die("Invalid Analysis ID");
+}
 
 
-
-
-
-/* =========================
-FETCH ANALYSIS
-========================= */
-
+// =========================
+// FETCH RESUME + ANALYSIS
+// =========================
 
 $stmt = mysqli_prepare(
     $conn,
-    "SELECT *
-     FROM resume_analysis
-     WHERE id=?"
+    "SELECT 
+        ra.*,
+        r.user_id,
+        r.resume_name
+     FROM resume_analysis ra
+     INNER JOIN resumes r
+        ON ra.resume_id = r.id
+     WHERE ra.id = ?
+       AND r.user_id = ?
+     LIMIT 1"
 );
 
+if (!$stmt) {
+    die("Database error: " . mysqli_error($conn));
+}
 
 mysqli_stmt_bind_param(
     $stmt,
-    "i",
-    $id
+    "ii",
+    $analysis_id,
+    $user_id
 );
-
 
 mysqli_stmt_execute($stmt);
 
-
 $result = mysqli_stmt_get_result($stmt);
 
+$data = mysqli_fetch_assoc($result);
 
-
-if(mysqli_num_rows($result)==0)
-{
+if (!$data) {
     die("Resume data not found");
 }
 
 
+// =========================
+// DATA
+// =========================
 
-$data = mysqli_fetch_assoc($result);
+$atsScore = intval($data['ats_score'] ?? 0);
+
+$strengths = $data['strengths'] ?? '';
+$weaknesses = $data['weaknesses'] ?? '';
+$missingSkills = $data['missing_skills'] ?? '';
+$suggestions = $data['suggestions'] ?? '';
+$jobRoles = $data['job_roles'] ?? '';
+$improvedResume = $data['improved_resume'] ?? '';
 
 
+// =========================
+// ESCAPE HTML
+// =========================
+
+function clean($text)
+{
+    return nl2br(
+        htmlspecialchars(
+            $text,
+            ENT_QUOTES,
+            'UTF-8'
+        )
+    );
+}
 
 
+// =========================
+// RESUME TITLE
+// =========================
 
-/* =========================
-CREATE HTML RESUME
-========================= */
+$resumeName = $data['resume_name'] ?? 'AI Generated Resume';
 
+
+// =========================
+// CREATE PROFESSIONAL PDF
+// =========================
 
 $html = '
 
@@ -91,223 +124,209 @@ $html = '
 
 <head>
 
+<meta charset="UTF-8">
+
 <style>
 
-body{
-
-font-family:Arial,sans-serif;
-
-color:#222;
-
+@page {
+    margin: 35px 45px;
 }
 
-
-h1{
-
-color:#2563eb;
-
-font-size:30px;
-
+body {
+    font-family: DejaVu Sans, sans-serif;
+    color: #222;
+    font-size: 11px;
+    line-height: 1.5;
 }
 
-
-h2{
-
-color:#2563eb;
-
-border-bottom:1px solid #ddd;
-
-padding-bottom:5px;
-
+.header {
+    text-align: center;
+    margin-bottom: 25px;
 }
 
-
-.section{
-
-margin-bottom:20px;
-
+.name {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
-
-.box{
-
-background:#f5f7fb;
-
-padding:15px;
-
-border-radius:10px;
-
+.subtitle {
+    font-size: 12px;
+    color: #555;
 }
 
+.section {
+    margin-top: 18px;
+    margin-bottom: 12px;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #444;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+}
+
+.content {
+    font-size: 11px;
+    white-space: normal;
+}
+
+.resume-content {
+    margin-top: 10px;
+}
+
+.score-box {
+    text-align: center;
+    margin-top: 20px;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+.footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 8px;
+    color: #777;
+}
 
 </style>
 
 </head>
 
-
 <body>
 
 
-<h1>
+<div class="header">
+
+<div class="name">
 AI Generated Resume
-</h1>
+</div>
+
+<div class="subtitle">
+ATS Optimized Professional Resume
+</div>
+
+</div>
 
 
 <div class="section">
 
-<h2>
-ATS Score
-</h2>
+<div class="section-title">
+Professional Resume
+</div>
 
-<div class="box">
-
-'.$data['ats_score'].'%
-
+<div class="resume-content">
+' . clean($improvedResume) . '
 </div>
 
 </div>
 
 
+<div class="score-box">
+
+<strong>
+ATS Compatibility Score:
+</strong>
+
+' . $atsScore . '%
+
+</div>
 
 
 <div class="section">
 
-<h2>
-Professional Strengths
-</h2>
+<div class="section-title">
+Key Strengths
+</div>
 
-<div class="box">
-
-'.$data['strengths'].'
-
+<div class="content">
+' . clean($strengths) . '
 </div>
 
 </div>
-
-
 
 
 <div class="section">
 
-<h2>
-Weaknesses
-</h2>
-
-<div class="box">
-
-'.$data['weaknesses'].'
-
-</div>
-
-</div>
-
-
-
-
-<div class="section">
-
-<h2>
-Missing Skills
-</h2>
-
-<div class="box">
-
-'.$data['missing_skills'].'
-
-</div>
-
-</div>
-
-
-
-
-<div class="section">
-
-<h2>
-Suggestions
-</h2>
-
-<div class="box">
-
-'.$data['suggestions'].'
-
-</div>
-
-</div>
-
-
-
-
-<div class="section">
-
-<h2>
+<div class="section-title">
 Recommended Job Roles
-</h2>
+</div>
 
-<div class="box">
-
-'.$data['job_roles'].'
-
+<div class="content">
+' . clean($jobRoles) . '
 </div>
 
 </div>
-
-
 
 
 <div class="section">
 
-<h2>
-Improved Resume
-</h2>
+<div class="section-title">
+Skills to Improve
+</div>
 
-<div class="box">
-
-'.$data['improved_resume'].'
-
+<div class="content">
+' . clean($missingSkills) . '
 </div>
 
 </div>
 
+
+<div class="section">
+
+<div class="section-title">
+AI Suggestions
+</div>
+
+<div class="content">
+' . clean($suggestions) . '
+</div>
+
+</div>
+
+
+<div class="footer">
+
+Generated using AI Resume Analyzer
+
+</div>
 
 
 </body>
 
 </html>
-
 ';
 
 
-
-
-
-/* =========================
-GENERATE PDF
-========================= */
-
+// =========================
+// GENERATE PDF
+// =========================
 
 $dompdf = new Dompdf();
 
-
 $dompdf->loadHtml($html);
-
 
 $dompdf->setPaper(
     'A4',
     'portrait'
 );
 
-
 $dompdf->render();
 
 
+// =========================
+// DOWNLOAD
+// =========================
 
 $dompdf->stream(
     "AI_Resume.pdf",
     [
-        "Attachment"=>true
+        "Attachment" => true
     ]
 );
 
+exit();
 
 ?>

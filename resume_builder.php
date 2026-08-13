@@ -67,7 +67,7 @@ $email = $user['email'] ?? "";
 
 
 <title>
-AI Resume Builder
+AI Resume Builder Result
 </title>
 
 

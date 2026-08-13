@@ -1,4 +1,5 @@
 <?php
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -7,79 +8,26 @@ session_start();
 require_once "config/db.php";
 require_once "ai/gemini.php";
 
-// =========================
-// FORM VALIDATION
-// =========================
 
 
-$email = strtolower(trim($_POST['email'] ?? ''));
-
-$phone = trim($_POST['phone'] ?? '');
-
-$fullname = trim($_POST['fullname'] ?? '');
-
-
-
-
-
-// NAME VALIDATION
-
-if(!preg_match("/^[A-Za-z ]+$/", $fullname))
-{
-    die("Invalid name. Only alphabets and spaces are allowed.");
-}
-
-
-
-
-
-
-// EMAIL VALIDATION
-
-if(!preg_match(
-"/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/",
-$email
-))
-{
-    die("Invalid email. Use lowercase letters only.");
-}
-
-
-
-
-
-
-
-// PHONE VALIDATION
-
-if(!preg_match(
-"/^[0-9]{10,12}$/",
-$phone
-))
-{
-    die("Invalid mobile number. Enter 10 to 12 digits only.");
-}
 /* =====================================
    LOGIN CHECK
 ===================================== */
 
-if(!isset($_SESSION['user_id']))
-{
+if (!isset($_SESSION['user_id'])) {
     header("Location: auth/login.php");
     exit();
 }
-
 
 $user_id = $_SESSION['user_id'];
 
 
 
 /* =====================================
-   FORM CHECK
+   REQUEST METHOD CHECK
 ===================================== */
 
-if($_SERVER["REQUEST_METHOD"]!="POST")
-{
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: resume_builder.php");
     exit();
 }
@@ -89,7 +37,6 @@ if($_SERVER["REQUEST_METHOD"]!="POST")
 /* =====================================
    GET FORM DATA
 ===================================== */
-
 
 $fullname = trim($_POST['fullname'] ?? '');
 
@@ -105,7 +52,7 @@ $github = trim($_POST['github'] ?? '');
 
 $summary = trim($_POST['summary'] ?? '');
 
-$skills = $_POST['skills'] ?? '';
+$skills = trim($_POST['skills'] ?? '');
 
 $projects = trim($_POST['projects'] ?? '');
 
@@ -115,11 +62,39 @@ $languages = trim($_POST['languages'] ?? '');
 
 $template = $_POST['template'] ?? "professional";
 
-if($fullname=="" || $email=="")
-{
-    die("Name and Email required");
+
+
+/* =====================================
+   VALIDATION
+===================================== */
+
+if ($fullname === "" || $email === "") {
+    die("Name and Email are required.");
 }
 
+
+/* Name */
+
+if (!preg_match("/^[A-Za-z ]+$/", $fullname)) {
+    die("Invalid name. Only alphabets and spaces are allowed.");
+}
+
+
+/* Email */
+
+if (!preg_match(
+    "/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/",
+    $email
+)) {
+    die("Invalid email. Use lowercase letters only.");
+}
+
+
+/* Phone */
+
+if (!preg_match("/^[0-9]{10,12}$/", $phone)) {
+    die("Invalid mobile number. Enter 10 to 12 digits only.");
+}
 
 
 
@@ -127,36 +102,31 @@ if($fullname=="" || $email=="")
    EXPERIENCE DATA
 ===================================== */
 
+$experience = "";
 
-$experience="";
+if (isset($_POST['company']) && is_array($_POST['company'])) {
 
+    foreach ($_POST['company'] as $key => $company) {
 
-if(isset($_POST['company']))
-{
+        $company = trim($company);
 
-foreach($_POST['company'] as $key=>$company)
-{
+        $position = trim($_POST['position'][$key] ?? '');
 
-$company = trim($company);
+        $start = trim($_POST['start'][$key] ?? '');
 
-$position = trim($_POST['position'][$key] ?? '');
+        $end = trim($_POST['end'][$key] ?? '');
 
-$start = trim($_POST['start'][$key] ?? '');
-
-$end = trim($_POST['end'][$key] ?? '');
-
-$description = trim($_POST['description'][$key] ?? '');
+        $description = trim(
+            $_POST['description'][$key] ?? ''
+        );
 
 
-
-if($company=="" && $position=="")
-{
-    continue;
-}
+        if ($company === "" && $position === "") {
+            continue;
+        }
 
 
-$experience .= "
-
+        $experience .= "
 Company:
 $company
 
@@ -169,13 +139,9 @@ $start - $end
 Description:
 $description
 
-
 ----------------------------
-
 ";
-
-}
-
+    }
 }
 
 
@@ -184,35 +150,33 @@ $description
    EDUCATION DATA
 ===================================== */
 
+$education = "";
 
-$education="";
+if (isset($_POST['college']) && is_array($_POST['college'])) {
 
+    foreach ($_POST['college'] as $key => $college) {
 
-if(isset($_POST['college']))
-{
+        $college = trim($college);
 
-foreach($_POST['college'] as $key=>$college)
-{
+        $degree = trim(
+            $_POST['degree'][$key] ?? ''
+        );
 
+        $year = trim(
+            $_POST['year'][$key] ?? ''
+        );
 
-$college = trim($college);
-
-$degree = trim($_POST['degree'][$key] ?? '');
-
-$year = trim($_POST['year'][$key] ?? '');
-
-$cgpa = trim($_POST['cgpa'][$key] ?? '');
-
-
-
-if($college=="" && $degree=="")
-{
-    continue;
-}
+        $cgpa = trim(
+            $_POST['cgpa'][$key] ?? ''
+        );
 
 
-$education .= "
+        if ($college === "" && $degree === "") {
+            continue;
+        }
 
+
+        $education .= "
 College:
 $college
 
@@ -225,19 +189,16 @@ $year
 CGPA:
 $cgpa
 
-
 ----------------------------
-
 ";
-
-
+    }
 }
 
-}
+
+
 /* =====================================
    CREATE RESUME TEXT
 ===================================== */
-
 
 $resumeText = "
 
@@ -317,14 +278,13 @@ $languages
 
 
 /* =====================================
-   GEMINI AI ANALYSIS
+   AI ANALYSIS
 ===================================== */
-
 
 $aiResponse = analyzeResumeAI($resumeText);
 
 
-// Convert JSON response into PHP array
+/* Convert AI response to array */
 
 $aiResult = json_decode(
     $aiResponse,
@@ -332,14 +292,15 @@ $aiResult = json_decode(
 );
 
 
+if (!is_array($aiResult)) {
 
-if(!$aiResult)
-{
+    echo "<h2>AI Response Invalid</h2>";
 
-die(
-"Gemini Response Invalid"
-);
+    echo "<pre>";
+    echo htmlspecialchars($aiResponse);
+    echo "</pre>";
 
+    exit();
 }
 
 
@@ -348,296 +309,284 @@ die(
    EXTRACT AI DATA
 ===================================== */
 
-
 $atsScore = intval(
-$aiResult['ats_score'] ?? 0
+    $aiResult['ats_score'] ?? 0
 );
-
 
 
 $strengths = "";
 
-if(isset($aiResult['strengths']))
-{
-$strengths =
-implode(
-"\n",
-$aiResult['strengths']
-);
-}
+if (isset($aiResult['strengths']) &&
+    is_array($aiResult['strengths'])) {
 
+    $strengths = implode(
+        "\n",
+        $aiResult['strengths']
+    );
+}
 
 
 $weaknesses = "";
 
-if(isset($aiResult['weaknesses']))
-{
-$weaknesses =
-implode(
-"\n",
-$aiResult['weaknesses']
-);
-}
+if (isset($aiResult['weaknesses']) &&
+    is_array($aiResult['weaknesses'])) {
 
+    $weaknesses = implode(
+        "\n",
+        $aiResult['weaknesses']
+    );
+}
 
 
 $missingSkills = "";
 
-if(isset($aiResult['missing_skills']))
-{
-$missingSkills =
-implode(
-"\n",
-$aiResult['missing_skills']
-);
-}
+if (isset($aiResult['missing_skills']) &&
+    is_array($aiResult['missing_skills'])) {
 
+    $missingSkills = implode(
+        "\n",
+        $aiResult['missing_skills']
+    );
+}
 
 
 $suggestions = "";
 
-if(isset($aiResult['suggestions']))
-{
-$suggestions =
-implode(
-"\n",
-$aiResult['suggestions']
-);
-}
+if (isset($aiResult['suggestions']) &&
+    is_array($aiResult['suggestions'])) {
 
+    $suggestions = implode(
+        "\n",
+        $aiResult['suggestions']
+    );
+}
 
 
 $jobRoles = "";
 
-if(isset($aiResult['job_roles']))
-{
-$jobRoles =
-implode(
-"\n",
-$aiResult['job_roles']
-);
-}
+if (isset($aiResult['job_roles']) &&
+    is_array($aiResult['job_roles'])) {
 
+    $jobRoles = implode(
+        "\n",
+        $aiResult['job_roles']
+    );
+}
 
 
 $interviewQuestions = "";
 
-if(isset($aiResult['interview_questions']))
-{
-$interviewQuestions =
-implode(
-"\n",
-$aiResult['interview_questions']
-);
-}
+if (isset($aiResult['interview_questions']) &&
+    is_array($aiResult['interview_questions'])) {
 
+    $interviewQuestions = implode(
+        "\n",
+        $aiResult['interview_questions']
+    );
+}
 
 
 $improvedResume =
-$aiResult['improved_resume']
-?? $resumeText;
+    $aiResult['improved_resume']
+    ?? $resumeText;
 
 
 
 /* =====================================
-   SAVE GENERATED RESUME
+   DATABASE TRANSACTION
 ===================================== */
-
 
 mysqli_begin_transaction($conn);
 
+try {
 
-try
-{
 
+    /* =================================
+       SAVE RESUME
+    ================================= */
 
-$resumeName =
-$fullname."_AI_Resume";
+    $resumeName =
+        $fullname . "_AI_Resume";
 
+    $resumePath = "";
 
+    $industry = "General";
 
-$resumePath = "";
+    $analysisMode = "builder";
 
 
+    $stmt = mysqli_prepare(
+        $conn,
 
-$industry = "General";
+        "INSERT INTO resumes
+        (
+            user_id,
+            resume_name,
+            resume_path,
+            resume_text,
+            industry,
+            job_role,
+            analysis_mode
+        )
+        VALUES
+        (?, ?, ?, ?, ?, ?, ?)"
+    );
 
 
+    if (!$stmt) {
+        throw new Exception(
+            "Resume prepare failed: " .
+            mysqli_error($conn)
+        );
+    }
 
-$analysisMode = "builder";
 
+    mysqli_stmt_bind_param(
+        $stmt,
+        "issssss",
+        $user_id,
+        $resumeName,
+        $resumePath,
+        $improvedResume,
+        $industry,
+        $jobRoles,
+        $analysisMode
+    );
 
 
-$stmt = mysqli_prepare(
+    if (!mysqli_stmt_execute($stmt)) {
 
-$conn,
+        throw new Exception(
+            "Resume insert failed: " .
+            mysqli_stmt_error($stmt)
+        );
+    }
 
-"INSERT INTO resumes
 
-(
-user_id,
-resume_name,
-resume_path,
-resume_text,
-industry,
-job_role,
-analysis_mode
-)
+    $resume_id = mysqli_insert_id($conn);
 
-VALUES
-(?,?,?,?,?,?,?)"
 
-);
+    if ($resume_id <= 0) {
+        throw new Exception(
+            "Resume ID was not generated."
+        );
+    }
 
 
 
-mysqli_stmt_bind_param(
+    /* =================================
+       SAVE AI ANALYSIS
+    ================================= */
 
-$stmt,
+    $analysisStmt = mysqli_prepare(
+        $conn,
 
-"issssss",
+        "INSERT INTO resume_analysis
+        (
+            resume_id,
+            ats_score,
+            strengths,
+            weaknesses,
+            missing_skills,
+            suggestions,
+            job_roles,
+            interview_questions,
+            improved_resume
+        )
+        VALUES
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    );
 
-$user_id,
 
-$resumeName,
+    if (!$analysisStmt) {
 
-$resumePath,
+        throw new Exception(
+            "Analysis prepare failed: " .
+            mysqli_error($conn)
+        );
+    }
 
-$improvedResume,
 
-$industry,
+    mysqli_stmt_bind_param(
+        $analysisStmt,
+        "iisssssss",
+        $resume_id,
+        $atsScore,
+        $strengths,
+        $weaknesses,
+        $missingSkills,
+        $suggestions,
+        $jobRoles,
+        $interviewQuestions,
+        $improvedResume
+    );
 
-$jobRoles,
 
-$analysisMode
+    if (!mysqli_stmt_execute($analysisStmt)) {
 
-);
+        throw new Exception(
+            "Analysis insert failed: " .
+            mysqli_stmt_error($analysisStmt)
+        );
+    }
 
 
+    /* =================================
+       GET ANALYSIS ID
+    ================================= */
 
-mysqli_stmt_execute($stmt);
+    $analysis_id =
+        mysqli_insert_id($conn);
 
 
+    if ($analysis_id <= 0) {
 
-$resume_id =
-mysqli_insert_id($conn);
-/* =====================================
-   SAVE AI ANALYSIS
-===================================== */
+        throw new Exception(
+            "Analysis ID was not generated."
+        );
+    }
 
 
-$analysisStmt = mysqli_prepare(
 
-$conn,
+    /* =================================
+       VERY IMPORTANT
+       COMMIT BEFORE REDIRECT
+    ================================= */
 
-"INSERT INTO resume_analysis
+    mysqli_commit($conn);
 
-(
-resume_id,
-ats_score,
-strengths,
-weaknesses,
-missing_skills,
-suggestions,
-job_roles,
-interview_questions,
-improved_resume
-)
 
-VALUES
-(?,?,?,?,?,?,?,?,?)"
 
-);
+    /* =================================
+       REDIRECT
+    ================================= */
 
+    header(
+        "Location: builder_result.php?id=" .
+        $analysis_id
+    );
 
-
-mysqli_stmt_bind_param(
-
-$analysisStmt,
-
-"iisssssss",
-
-$resume_id,
-
-$atsScore,
-
-$strengths,
-
-$weaknesses,
-
-$missingSkills,
-
-$suggestions,
-
-$jobRoles,
-
-$interviewQuestions,
-
-$improvedResume
-
-);
-
-
-
-mysqli_stmt_execute($analysisStmt);
-
-
-
-$analysis_id =
-mysqli_insert_id($conn);
-
-
-
-/* =====================================
-   COMPLETE TRANSACTION
-===================================== */
-
-
-mysqli_commit($conn);
-
-
-
-/* =====================================
-   REDIRECT TO RESULT PAGE
-===================================== */
-
-
-header(
-"Location: builder_result.php?id=".$analysis_id
-);
-
-exit();
-
+    exit();
 
 
 }
 
-catch(Exception $e)
-{
+catch (Exception $e) {
 
 
-mysqli_rollback($conn);
+    mysqli_rollback($conn);
 
 
-echo "
+    echo "<h2>Resume Generation Failed</h2>";
 
-<h2>
-Resume Generation Failed
-</h2>
+    echo "<p>";
 
-<p>
+    echo htmlspecialchars(
+        $e->getMessage()
+    );
 
-".$e->getMessage()."
-
-</p>
-
-";
-
+    echo "</p>";
 
 }
-
-
 
 ?>
-
-

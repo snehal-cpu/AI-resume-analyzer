@@ -68,7 +68,7 @@ if(!isset($_GET['id']))
 
 $analysis_id = intval($_GET['id']);
 
-
+echo "<h2 style='color:red;'>DEBUG ANALYSIS ID: ".$analysis_id."</h2>";
 
 
 

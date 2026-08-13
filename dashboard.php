@@ -811,7 +811,7 @@ Analyze
 </a>
 
 
-<a href="result.php?id=<?php echo $resume['id']; ?>"
+<a href="result.php?resume_id=<?php echo $resume['id']; ?>"
 class="btn btn-outline-info btn-sm">
 
 <i class="fa-solid fa-eye"></i>
