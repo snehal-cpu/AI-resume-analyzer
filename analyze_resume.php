@@ -127,7 +127,7 @@ Resume AI Analysis
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
+<link rel="stylesheet" href="assets/css/theme.css">
 
 
 <style>
@@ -310,7 +310,7 @@ Analyze With AI
 </div>
 
 
-
+<script src="assets/js/script.js"></script>
 </body>
 
 

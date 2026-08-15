@@ -44,7 +44,7 @@ if(isset($_GET['error']))
 
 
 <link rel="stylesheet" href="../assets/css/auth.css">
-
+<link rel="stylesheet" href="../assets/css/theme.css">
 
 </head>
 

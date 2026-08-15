@@ -798,3 +798,169 @@ gap:10px;
 }
 
 }
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+body.dark-mode {
+    background: linear-gradient(
+        135deg,
+        #020617,
+        #0f172a,
+        #111827
+    ) !important;
+
+    color: #ffffff !important;
+}
+
+/* Header */
+
+body.dark-mode header {
+    background: rgba(17, 24, 39, 0.95) !important;
+}
+
+/* Navigation */
+
+body.dark-mode nav a,
+body.dark-mode .nav-link {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .nav-link:hover,
+body.dark-mode .nav-link.active {
+    color: #ffffff !important;
+}
+
+/* Theme button */
+
+body.dark-mode .theme-btn {
+    background: #1e293b !important;
+    color: #ffffff !important;
+}
+
+/* Hero */
+
+body.dark-mode .hero h1 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .hero p {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode .tag {
+    background: #1e293b !important;
+    color: #60a5fa !important;
+}
+
+body.dark-mode .secondary-btn {
+    color: #ffffff !important;
+}
+
+/* Section titles */
+
+body.dark-mode .section-title h2 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .section-title p {
+    color: #94a3b8 !important;
+}
+
+/* Feature cards */
+
+body.dark-mode .feature-card {
+    background: rgba(30, 41, 59, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-mode .feature-card h3 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .feature-card p {
+    color: #94a3b8 !important;
+}
+
+/* How it works */
+
+body.dark-mode .step h3 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .step p {
+    color: #94a3b8 !important;
+}
+
+/* Testimonials */
+
+body.dark-mode .testimonial-card {
+    background: #1e293b !important;
+}
+
+body.dark-mode .testimonial-card h4 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .testimonial-card p,
+body.dark-mode .testimonial-card span {
+    color: #94a3b8 !important;
+}
+
+/* FAQ */
+
+body.dark-mode .faq-container details {
+    background: #1e293b !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode summary {
+    color: #ffffff !important;
+}
+
+body.dark-mode details p {
+    color: #94a3b8 !important;
+}
+
+/* Footer */
+
+body.dark-mode footer {
+    background: #111827 !important;
+}
+
+body.dark-mode footer h2,
+body.dark-mode footer h3 {
+    color: #ffffff !important;
+}
+
+body.dark-mode footer p,
+body.dark-mode footer li,
+body.dark-mode footer a,
+body.dark-mode .copyright {
+    color: #94a3b8 !important;
+}
+
+
+/* =========================================
+   THEME BUTTON
+========================================= */
+
+.theme-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.theme-btn:hover {
+    transform: rotate(15deg);
+}

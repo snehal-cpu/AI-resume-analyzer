@@ -83,6 +83,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 <link rel="stylesheet"
 href="assets/css/settings.css">
 
+<link rel="stylesheet" href="assets/css/theme.css">
+
 
 </head>
 
@@ -426,5 +428,7 @@ Update Password
 
 
 </body>
+
+<script src="assets/js/script.js"></script>
 
 </html>

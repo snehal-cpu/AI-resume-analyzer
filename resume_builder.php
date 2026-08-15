@@ -83,6 +83,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 <link rel="stylesheet"
 href="assets/css/resume_builder.css">
 
+<link rel="stylesheet" href="assets/css/theme.css">
+
 
 </head>
 
@@ -918,7 +920,7 @@ Back
 
 
 <script src="assets/js/resume_builder.js"></script>
-
+<script src="assets/js/script.js"></script>
 
 </body>
 

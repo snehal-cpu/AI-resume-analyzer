@@ -36,6 +36,7 @@ ORDER BY resume_analysis.id DESC"
 <title>Resume History</title>
 
 <link rel="stylesheet" href="css/history.css">
+<link rel="stylesheet" href="assets/css/theme.css">
 
 </head>
 
@@ -119,7 +120,7 @@ echo "<h2>No Resume History Found</h2>";
 </div>
 
 </div>
-
+<script src="assets/js/script.js"></script>
 
 </body>
 </html>

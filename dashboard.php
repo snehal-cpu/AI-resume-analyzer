@@ -305,6 +305,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 <link
 rel="stylesheet"
 href="assets/css/dashboard.css">
+<link rel="stylesheet" href="assets/css/theme.css">
 
 </head>
 
@@ -448,10 +449,14 @@ placeholder="Search Resume...">
 
 <div class="profile">
 
-<i class="fa-solid fa-bell notification"></i>
+    <button id="theme-toggle" class="theme-btn" type="button">
+        <i class="fa-solid fa-moon"></i>
+    </button>
 
-<img
-src="https://ui-avatars.com/api/?name=<?php echo urlencode($user['fullname']); ?>&background=2563eb&color=fff">
+    <i class="fa-solid fa-bell notification"></i>
+
+    <img
+    src="https://ui-avatars.com/api/?name=<?php echo urlencode($user['fullname']); ?>&background=2563eb&color=fff">
 
 </div>
 
@@ -960,7 +965,7 @@ max:100
 
 
 <script src="assets/js/dashboard.js"></script>
-
+<script src="assets/js/script.js"></script>
 </body>
 
 </html>
