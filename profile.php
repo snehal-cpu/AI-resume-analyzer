@@ -224,9 +224,12 @@ AI Resume Analyzer Member
 </p>
 
 
+
 </div>
 
-
+<button id="theme-toggle" class="theme-btn" type="button">
+    <i class="fa-solid fa-moon"></i>
+</button>
 
 </div>
 
@@ -548,6 +551,7 @@ Save Changes
 
 
 <script src="assets/js/profile.js"></script>
+<script src="assets/js/script.js"></script>
 
 
 

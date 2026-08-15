@@ -469,9 +469,12 @@ View and manage your AI analyzed resumes
 </p>
 
 
+
+    <button id="theme-toggle" class="theme-btn" type="button">
+    <i class="fa-solid fa-moon"></i>
+</button>
+
 </div>
-
-
 
 
 

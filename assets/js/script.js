@@ -1,27 +1,57 @@
-console.log("SCRIPT.JS LOADED");
-
 document.addEventListener("DOMContentLoaded", function () {
 
     const themeToggle = document.getElementById("theme-toggle");
 
-    console.log("Theme button:", themeToggle);
-
     if (!themeToggle) {
-        console.log("Theme button not found");
         return;
     }
 
+    const icon = themeToggle.querySelector("i");
+
+    function applyTheme(theme) {
+
+        if (theme === "dark") {
+
+            document.body.classList.add("dark-mode");
+
+            if (icon) {
+                icon.classList.remove("fa-moon");
+                icon.classList.add("fa-sun");
+            }
+
+        } else {
+
+            document.body.classList.remove("dark-mode");
+
+            if (icon) {
+                icon.classList.remove("fa-sun");
+                icon.classList.add("fa-moon");
+            }
+        }
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem("theme") || "light";
+
+    applyTheme(savedTheme);
+
+
+    // Toggle theme
     themeToggle.addEventListener("click", function () {
 
-        console.log("BUTTON CLICKED");
-
-        document.body.classList.toggle("dark-mode");
-
-        console.log(
-            "Dark mode:",
+        const currentTheme =
             document.body.classList.contains("dark-mode")
-        );
+                ? "dark"
+                : "light";
 
+        const newTheme =
+            currentTheme === "dark"
+                ? "light"
+                : "dark";
+
+        localStorage.setItem("theme", newTheme);
+
+        applyTheme(newTheme);
     });
 
 });

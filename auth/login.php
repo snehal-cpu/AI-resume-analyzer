@@ -58,11 +58,15 @@ if(isset($_GET['error']))
 <div class="login-card">
 
 
+</button>
 <h2>
 Welcome Back 👋
+
 </h2>
 
-
+<button id="theme-toggle" class="theme-btn" type="button">
+    <i class="fa-solid fa-moon"></i>
+</button>
 <p>
 Login to your AI Resume Analyzer account
 </p>
@@ -74,6 +78,7 @@ Login to your AI Resume Analyzer account
 <div class="alert alert-danger">
 
 <?php echo $error; ?>
+
 
 </div>
 
@@ -181,7 +186,7 @@ Register
 
 </div>
 
-
+<script src="../assets/js/script.js"></script>
 
 </body>
 

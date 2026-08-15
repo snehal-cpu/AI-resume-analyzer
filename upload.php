@@ -376,6 +376,8 @@ color:#cbd5e1;
 
 ResumeAI
 
+
+
 </div>
 
 <ul>
@@ -408,6 +410,7 @@ ResumeAI
 
 <p>Analyze resumes for any industry using AI</p>
 
+
 </div>
 
 <div class="profile">
@@ -415,7 +418,9 @@ ResumeAI
 <img src="https://ui-avatars.com/api/?name=<?php echo urlencode($userName); ?>&background=3b82f6&color=fff">
 
 <strong><?php echo htmlspecialchars($userName); ?></strong>
-
+<button id="theme-toggle" class="theme-btn" type="button">
+    <i class="fa-solid fa-moon"></i>
+</button>
 </div>
 
 </div>

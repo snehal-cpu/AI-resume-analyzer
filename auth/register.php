@@ -32,7 +32,9 @@ if(isset($_SESSION['user_id']))
 <div class="login-card">
 
 <h2>Create Account</h2>
-
+<button id="theme-toggle" class="theme-btn" type="button">
+    <i class="fa-solid fa-moon"></i>
+</button>
 <p>Create your AI Resume Analyzer account</p>
 
 <form action="register_process.php" method="POST">
@@ -112,5 +114,6 @@ Login
 
 </div>
 <script src="assets/js/register_validation.js"></script>
+<script src="../assets/js/script.js"></script>
 </body>
 </html>

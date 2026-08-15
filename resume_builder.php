@@ -271,7 +271,9 @@ Create professional ATS friendly resume using AI
 
 </div>
 
-
+<button id="theme-toggle" class="theme-btn" type="button">
+    <i class="fa-solid fa-moon"></i>
+</button>
 </div>
 
 
