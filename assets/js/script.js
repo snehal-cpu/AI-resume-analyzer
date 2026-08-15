@@ -1,29 +1,53 @@
-const toggle = document.getElementById("theme-toggle");
+document.addEventListener("DOMContentLoaded", function () {
 
-const body = document.body;
+    const themeToggle = document.getElementById("theme-toggle");
 
-// Load saved theme
-if(localStorage.getItem("theme") === "dark"){
-    body.classList.add("dark-mode");
-    toggle.innerHTML='<i class="fa-solid fa-sun"></i>';
-}
-
-toggle.addEventListener("click",()=>{
-
-    body.classList.toggle("dark-mode");
-
-    if(body.classList.contains("dark-mode")){
-
-        localStorage.setItem("theme","dark");
-
-        toggle.innerHTML='<i class="fa-solid fa-sun"></i>';
-
-    }else{
-
-        localStorage.setItem("theme","light");
-
-        toggle.innerHTML='<i class="fa-solid fa-moon"></i>';
-
+    if (!themeToggle) {
+        console.log("Theme button not found");
+        return;
     }
+
+    const icon = themeToggle.querySelector("i");
+
+    // Check saved theme
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark-mode");
+
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+
+    } else {
+        document.body.classList.remove("dark-mode");
+
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+    }
+
+
+    // Toggle theme
+    themeToggle.addEventListener("click", function () {
+
+        document.body.classList.toggle("dark-mode");
+
+        if (document.body.classList.contains("dark-mode")) {
+
+            // DARK MODE
+            icon.classList.remove("fa-moon");
+            icon.classList.add("fa-sun");
+
+            localStorage.setItem("theme", "dark");
+
+        } else {
+
+            // LIGHT MODE
+            icon.classList.remove("fa-sun");
+            icon.classList.add("fa-moon");
+
+            localStorage.setItem("theme", "light");
+        }
+
+    });
 
 });
