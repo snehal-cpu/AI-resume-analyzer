@@ -2,3 +2,4 @@
 /vendor/
 uploads/
 *.log
+config/gemini_key.php

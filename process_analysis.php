@@ -69,7 +69,13 @@ $atsScore = intval(
 
 $aiResult = analyzeResumeAI($resumeText);
 
-
+if (is_array($aiResult) && isset($aiResult['api_error'])) {
+    die(
+        "<h2>Gemini Error</h2><pre>" .
+        htmlspecialchars($aiResult['api_error']) .
+        "</pre>"
+    );
+}
 
 
 // Gemini failed fallback
