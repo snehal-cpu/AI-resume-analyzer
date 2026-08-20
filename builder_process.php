@@ -284,25 +284,55 @@ $languages
 $aiResponse = analyzeResumeAI($resumeText);
 
 
-/* Convert AI response to array */
-
-$aiResult = json_decode(
-    $aiResponse,
-    true
-);
-
-
-if (!is_array($aiResult)) {
-
-    echo "<h2>AI Response Invalid</h2>";
-
+if (is_array($aiResponse) && !empty($aiResponse['api_error'])) {
+    echo "<h2>Gemini AI Error</h2>";
     echo "<pre>";
-    echo htmlspecialchars($aiResponse);
+    echo htmlspecialchars($aiResponse['api_error']);
     echo "</pre>";
-
     exit();
 }
 
+
+/*
+ * analyzeResumeAI() may return either:
+ * 1. An array
+ * 2. A JSON string
+ */
+
+if (is_array($aiResponse)) {
+
+    // Already an array — DO NOT json_decode()
+    $aiResult = $aiResponse;
+
+} elseif (is_string($aiResponse)) {
+
+    // JSON string — decode it
+    $aiResult = json_decode($aiResponse, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        echo "<h2>AI Response Invalid</h2>";
+        echo "<pre>";
+        echo htmlspecialchars($aiResponse);
+        echo "</pre>";
+        exit();
+    }
+
+} else {
+
+    echo "<h2>AI Response Invalid</h2>";
+    echo "<pre>";
+    echo "Unexpected AI response type: " . gettype($aiResponse);
+    echo "</pre>";
+    exit();
+}
+
+if (!is_array($aiResult)) {
+    echo "<h2>AI Response Invalid</h2>";
+    echo "<pre>";
+    print_r($aiResult);
+    echo "</pre>";
+    exit();
+}
 
 
 /* =====================================
