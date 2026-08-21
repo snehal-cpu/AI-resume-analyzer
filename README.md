@@ -1,1 +1,1 @@
-AI-resume-analyzer
+Project updated on August 21, 2026.
