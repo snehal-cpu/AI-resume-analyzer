@@ -294,33 +294,52 @@ $improvedResume
 
 
 
+if (mysqli_stmt_execute($stmt)) {
 
+    // Verify that the analysis was actually inserted
+    $check = mysqli_prepare(
+        $conn,
+        "SELECT id, resume_id, ats_score
+         FROM resume_analysis
+         WHERE resume_id = ?
+         LIMIT 1"
+    );
 
-if(mysqli_stmt_execute($stmt))
-{
+    mysqli_stmt_bind_param($check, "i", $resume_id);
+    mysqli_stmt_execute($check);
 
+    $checkResult = mysqli_stmt_get_result($check);
+    $savedAnalysis = mysqli_fetch_assoc($checkResult);
 
-    // Get analysis table ID
+    if (!$savedAnalysis) {
 
-  
-header("Location: result.php?resume_id=" . $resume_id);
-exit();
+        die(
+            "<h2>Analysis was generated but was NOT saved.</h2>" .
+            "<p>Resume ID: " . htmlspecialchars($resume_id) . "</p>" .
+            "<p>Please check the resume_analysis table and database connection.</p>"
+        );
 
-   
+    }
+
+    // Everything is OK
+    header(
+        "Location: result.php?resume_id=" .
+        $resume_id
+    );
 
     exit();
 
-}
-
-else
-{
+} else {
 
     die(
-        "Database Error : ".
-        mysqli_error($conn)
+        "<h2>Database Error</h2><pre>" .
+        htmlspecialchars(mysqli_stmt_error($stmt)) .
+        "</pre>"
     );
 
 }
+
+
 
 
 

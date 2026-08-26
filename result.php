@@ -19,8 +19,8 @@ $resume_id = intval($_GET['resume_id']);
 if ($resume_id <= 0) {
     die("Invalid Resume ID");
 }
+// ================= FETCH ANALYSIS =================
 
-// Prepare query
 $sql = "SELECT * FROM resume_analysis WHERE resume_id = ? LIMIT 1";
 
 $stmt = mysqli_prepare($conn, $sql);
@@ -31,15 +31,23 @@ if (!$stmt) {
 
 mysqli_stmt_bind_param($stmt, "i", $resume_id);
 
-mysqli_stmt_execute($stmt);
+if (!mysqli_stmt_execute($stmt)) {
+    die("Execute failed: " . mysqli_stmt_error($stmt));
+}
 
 $result = mysqli_stmt_get_result($stmt);
+
+if (!$result) {
+    die("Could not get result: " . mysqli_error($conn));
+}
 
 $analysis = mysqli_fetch_assoc($result);
 
 if (!$analysis) {
-    die("Analysis report not found");
+    die("Analysis report not found for Resume ID: " . $resume_id);
 }
+
+mysqli_stmt_close($stmt);
 // ================= FETCH ANALYSIS =================
 
 $stmt = mysqli_prepare(
@@ -290,14 +298,12 @@ ATS Score
 
 
 
-<div class="score-circle">
+<div class="score-circle"
+     style="background: conic-gradient(#00c6ff <?php echo ($score * 3.6); ?>deg, #071522 <?php echo ($score * 3.6); ?>deg 360deg);">
 
-<span>
-
-<?php echo $score; ?>%
-
-</span>
-
+    <span>
+        <?php echo $score; ?>%
+    </span>
 
 </div>
 

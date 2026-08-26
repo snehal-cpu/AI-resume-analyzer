@@ -922,7 +922,7 @@ Back
 
 
 <script src="assets/js/resume_builder.js"></script>
-<script src="assets/js/script.js"></script>
+
 
 </body>
 

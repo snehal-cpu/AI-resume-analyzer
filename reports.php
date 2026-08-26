@@ -929,7 +929,7 @@ Upload Resume
 
 
 <script src="assets/js/reports.js"></script>
-<script src="assets/js/script.js"></script>
+
 
 </body>
 

@@ -120,7 +120,7 @@ echo "<h2>No Resume History Found</h2>";
 </div>
 
 </div>
-<script src="assets/js/script.js"></script>
+
 
 </body>
 </html>

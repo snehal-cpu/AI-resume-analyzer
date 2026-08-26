@@ -290,102 +290,47 @@ margin-right:10px;
 }
 
 
+.score-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin: 30px auto;
 
-/* ================= SCORE ================= */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
+    position: relative;
 
-.score-card
-{
-
-text-align:center;
-
+    background: conic-gradient(
+        #00c6ff 0deg,
+        #0066ff var(--score-degree),
+        #071522 var(--score-degree),
+        #071522 360deg
+    );
 }
 
+.score-circle::before {
+    content: "";
+    position: absolute;
 
+    width: 160px;
+    height: 160px;
 
+    border-radius: 50%;
 
-.score-circle
-{
-
-width:200px;
-
-height:200px;
-
-border-radius:50%;
-
-margin:30px auto;
-
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-
-background:
-conic-gradient(
-#00c6ff 0deg,
-#0066ff 280deg,
-#071522 280deg
-);
-
-
-position:relative;
-
+    background: #102a43;
 }
 
+.score-circle span {
+    position: relative;
+    z-index: 2;
 
-
-
-.score-circle::before
-{
-
-content:"";
-
-position:absolute;
-
-width:160px;
-
-height:160px;
-
-border-radius:50%;
-
-background:#102a43;
-
+    font-size: 45px;
+    font-weight: 700;
+    color: #00c6ff;
 }
 
-
-
-
-
-.score-circle span
-{
-
-position:relative;
-
-font-size:45px;
-
-font-weight:700;
-
-color:#00c6ff;
-
-}
-
-
-
-
-
-.score-status
-{
-
-font-size:22px;
-
-color:#22c55e;
-
-font-weight:600;
-
-}
 
 
 
