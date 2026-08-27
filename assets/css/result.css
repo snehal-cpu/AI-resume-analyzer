@@ -547,16 +547,7 @@ linear-gradient(
 /* RESPONSIVE */
 
 
-@media(max-width:900px)
-{
 
-
-.sidebar
-{
-
-width:80px;
-
-}
 
 
 .logo span,
@@ -587,5 +578,78 @@ grid-template-columns:1fr;
 
 }
 
+
+
+
+/* ================= MOBILE MENU ================= */
+
+/* ================= MOBILE MENU ================= */
+
+.mobile-menu-btn {
+    display: none;
+}
+
+@media screen and (max-width: 900px) {
+
+    .mobile-menu-btn {
+        display: flex !important;
+
+        position: fixed !important;
+        top: 15px !important;
+        left: 15px !important;
+
+        width: 48px !important;
+        height: 48px !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        border: none !important;
+        border-radius: 10px !important;
+
+        background: #0066ff !important;
+        color: #ffffff !important;
+
+        font-size: 28px !important;
+        line-height: 1 !important;
+
+        cursor: pointer !important;
+
+        z-index: 99999 !important;
+    }
+
+    .sidebar {
+        position: fixed !important;
+        left: -270px !important;
+        width: 260px !important;
+
+        transition: left 0.3s ease !important;
+
+        z-index: 99998 !important;
+    }
+
+    .sidebar.mobile-open {
+        left: 0 !important;
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+
+        inset: 0;
+
+        background: rgba(0,0,0,0.5);
+
+        z-index: 99997;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 80px 20px 30px !important;
+    }
 
 }
