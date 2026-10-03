@@ -123,7 +123,7 @@ $joinYear = date(
 
 <head>
 
-
+<link rel="stylesheet" href="assets/css/sidebar.css">
 <meta charset="UTF-8">
 
 
@@ -227,9 +227,7 @@ AI Resume Analyzer Member
 
 </div>
 
-<button id="theme-toggle" class="theme-btn" type="button">
-    <i class="fa-solid fa-moon"></i>
-</button>
+
 
 </div>
 

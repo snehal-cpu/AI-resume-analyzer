@@ -89,22 +89,41 @@ $totalResume=$row['total'];
 
 
 
+
 // ================= ATS SCORE =================
 
 $averageATS = 0;
 
-$stmt = mysqli_prepare($conn,
-"
-SELECT AVG(a.ats_score) AS avg_score
-FROM resume_analysis a
-JOIN resumes r
-ON a.resume_id = r.id
-WHERE r.user_id = ?
-");
+$stmt = mysqli_prepare(
+    $conn,
+    "
+    SELECT AVG(a.ats_score) AS avg_score
+    FROM resume_analysis a
+    INNER JOIN resumes r
+        ON a.resume_id = r.id
+    WHERE r.user_id = ?
+    "
+);
 
 if (!$stmt) {
     die("Prepare failed: " . mysqli_error($conn));
 }
+
+mysqli_stmt_bind_param(
+    $stmt,
+    "i",
+    $user_id
+);
+
+mysqli_stmt_execute($stmt);
+
+$result = mysqli_stmt_get_result($stmt);
+
+$row = mysqli_fetch_assoc($result);
+
+$averageATS = round(
+    floatval($row['avg_score'] ?? 0)
+);
 
 
 // ================= AI SUGGESTIONS =================
@@ -281,7 +300,7 @@ while($row = mysqli_fetch_assoc($result))
 <html>
 
 <head>
-
+<link rel="stylesheet" href="assets/css/sidebar.css">
 <meta charset="UTF-8">
 
 <meta
@@ -449,9 +468,7 @@ placeholder="Search Resume...">
 
 <div class="profile">
 
-    <button id="theme-toggle" class="theme-btn" type="button">
-        <i class="fa-solid fa-moon"></i>
-    </button>
+   
 
     <i class="fa-solid fa-bell notification"></i>
 

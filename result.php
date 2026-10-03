@@ -1,15 +1,19 @@
 <?php
+
 session_start();
 
 require_once "config/db.php";
 
-// Login check
+// ================= LOGIN CHECK =================
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: auth/login.php");
     exit();
 }
 
-// Check Resume ID
+
+// ================= CHECK RESUME ID =================
+
 if (!isset($_GET['resume_id'])) {
     die("Resume ID missing");
 }
@@ -19,9 +23,16 @@ $resume_id = intval($_GET['resume_id']);
 if ($resume_id <= 0) {
     die("Invalid Resume ID");
 }
+
+
 // ================= FETCH ANALYSIS =================
 
-$sql = "SELECT * FROM resume_analysis WHERE resume_id = ? LIMIT 1";
+$sql = "
+    SELECT *
+    FROM resume_analysis
+    WHERE resume_id = ?
+    LIMIT 1
+";
 
 $stmt = mysqli_prepare($conn, $sql);
 
@@ -29,187 +40,114 @@ if (!$stmt) {
     die("Prepare failed: " . mysqli_error($conn));
 }
 
-mysqli_stmt_bind_param($stmt, "i", $resume_id);
-
-if (!mysqli_stmt_execute($stmt)) {
-    die("Execute failed: " . mysqli_stmt_error($stmt));
-}
-
-$result = mysqli_stmt_get_result($stmt);
-
-if (!$result) {
-    die("Could not get result: " . mysqli_error($conn));
-}
-
-$analysis = mysqli_fetch_assoc($result);
-
-if (!$analysis) {
-    die("Analysis report not found for Resume ID: " . $resume_id);
-}
-
-mysqli_stmt_close($stmt);
-// ================= FETCH ANALYSIS =================
-
-$stmt = mysqli_prepare(
-    $conn,
-    "
-    SELECT *
-    FROM resume_analysis
-    WHERE resume_id = ?
-    LIMIT 1
-    "
-);
-
 mysqli_stmt_bind_param(
     $stmt,
     "i",
     $resume_id
 );
 
-mysqli_stmt_execute($stmt);
+if (!mysqli_stmt_execute($stmt)) {
+    die("Query failed: " . mysqli_stmt_error($stmt));
+}
 
 $result = mysqli_stmt_get_result($stmt);
 
 $analysis = mysqli_fetch_assoc($result);
+
+
+// ================= CHECK RESULT =================
 
 if (!$analysis) {
-    die("Analysis report not found");
+    die("Analysis report not found for Resume ID: " . $resume_id);
 }
-
-mysqli_stmt_execute($stmt);
-
-
-$result = mysqli_stmt_get_result($stmt);
-
-
-$analysis = mysqli_fetch_assoc($result);
-
-
-
-if(!$analysis)
-{
-    die("Analysis report not found");
-}
-
-
 
 
 // ================= SAFE DATA FUNCTION =================
 
-
 function convertToArray($data)
 {
-
-    if(empty($data))
-    {
+    if (empty($data)) {
         return [];
     }
 
+    $decoded = json_decode($data, true);
 
-    // JSON support
-
-    $decoded = json_decode($data,true);
-
-
-    if(is_array($decoded))
-    {
+    if (is_array($decoded)) {
         return $decoded;
     }
 
-
-    // newline support
-
-    return explode("\n",$data);
-
+    return explode("\n", $data);
 }
 
 
-
-
 // ================= DATA =================
-
 
 $score = intval(
     $analysis['ats_score'] ?? 0
 );
 
-
-
 $strengths = convertToArray(
     $analysis['strengths'] ?? ''
 );
-
-
 
 $weaknesses = convertToArray(
     $analysis['weaknesses'] ?? ''
 );
 
-
-
 $missingSkills = convertToArray(
     $analysis['missing_skills'] ?? ''
 );
-
-
 
 $suggestions = convertToArray(
     $analysis['suggestions'] ?? ''
 );
 
-
-
 $jobRoles = convertToArray(
     $analysis['job_roles'] ?? ''
 );
-
-
 
 $questions = convertToArray(
     $analysis['interview_questions'] ?? ''
 );
 
-
-
 $improvedResume =
-$analysis['improved_resume'] ?? '';
-
-
+    $analysis['improved_resume'] ?? '';
 
 
 // ================= ATS GRADE =================
 
+if ($score >= 90) {
 
-if($score >= 90)
-{
-    $grade="A+";
-    $status="Excellent Resume";
-}
-elseif($score >=80)
-{
-    $grade="A";
-    $status="Strong Resume";
-}
-elseif($score>=70)
-{
-    $grade="B";
-    $status="Good Resume";
-}
-elseif($score>=60)
-{
-    $grade="C";
-    $status="Needs Improvement";
-}
-else
-{
-    $grade="D";
-    $status="Weak Resume";
-}
+    $grade = "A+";
+    $status = "Excellent Resume";
 
+}
+elseif ($score >= 80) {
 
+    $grade = "A";
+    $status = "Strong Resume";
+
+}
+elseif ($score >= 70) {
+
+    $grade = "B";
+    $status = "Good Resume";
+
+}
+elseif ($score >= 60) {
+
+    $grade = "C";
+    $status = "Needs Improvement";
+
+}
+else {
+
+    $grade = "D";
+    $status = "Weak Resume";
+
+}
 
 ?>
-
 
 
 <!DOCTYPE html>
@@ -219,7 +157,7 @@ else
 
 <head>
 
-
+<link rel="stylesheet" href="assets/css/sidebar.css">
 <meta charset="UTF-8">
 
 
@@ -239,6 +177,33 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
 
 <link rel="stylesheet"
 href="assets/css/result.css">
+
+<style>
+/* ================= RESULT PAGE LAYOUT FIX ================= */
+
+.main-content {
+    margin-left: 300px !important;
+    width: calc(100% - 300px) !important;
+    padding: 40px !important;
+}
+
+.report-container {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+/* Keep mobile layout unchanged */
+@media screen and (max-width: 900px) {
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 80px 20px 30px !important;
+    }
+
+}
+</style>
 
 
 </head>

@@ -7,6 +7,19 @@
 html{
     scroll-behavior:smooth;
 }
+
+/* Logo visibility */
+.logo h2{
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+   
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
 </style>
 
 <meta charset="UTF-8">
@@ -21,8 +34,6 @@ html{
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <link rel="stylesheet" href="assets/css/home.css">
-
-
 
 </head>
 
@@ -64,10 +75,6 @@ html{
 
 <a href="./auth/register.php" class="register-btn">Register</a>
 
- <button id="theme-toggle" class="theme-btn">
-        <i class="fa-solid fa-moon"></i>
-    </button>
-
 </div>
 
 </div>
@@ -99,6 +106,7 @@ improve formatting, and get personalized career recommendations.
 <div class="hero-buttons">
 <div class="shape shape1"></div>
 <div class="shape shape2"></div>
+
 <a href="./auth/register.php" class="primary-btn">
 Get Started
 </a>
@@ -388,7 +396,7 @@ AOS.init({
 });
 </script>
 
-
+<script src="assets/js/script.js"></script>
 
 </body>
 </html>

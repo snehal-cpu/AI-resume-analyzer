@@ -288,9 +288,7 @@ Manage your ResumeAI account
 
 </div>
 
-<button id="theme-toggle" class="theme-btn" type="button">
-    <i class="fa-solid fa-moon"></i>
-</button>
+
 
 </div>
 

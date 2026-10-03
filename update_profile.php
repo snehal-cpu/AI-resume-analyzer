@@ -4,120 +4,310 @@ session_start();
 
 require_once "config/db.php";
 
-// ============================
-// LOGIN CHECK
-// ============================
+
+/* =========================================================
+   CHECK LOGIN
+========================================================= */
 
 if (!isset($_SESSION['user_id'])) {
+
     header("Location: auth/login.php");
     exit();
+
 }
 
 $user_id = $_SESSION['user_id'];
 
 
-// ============================
-// GET FORM DATA
-// ============================
+/* =========================================================
+   UPDATE NAME + EMAIL
+========================================================= */
 
-$fullname = trim($_POST['fullname'] ?? '');
-$email = trim($_POST['email'] ?? '');
+if (
+    isset($_POST['fullname']) &&
+    isset($_POST['email'])
+) {
 
-$password = $_POST['password'] ?? '';
-$confirm_password = $_POST['confirm_password'] ?? '';
+    $fullname = trim($_POST['fullname']);
 
-
-// ============================
-// BASIC VALIDATION
-// ============================
-
-if ($fullname === '' || $email === '') {
-
-    $_SESSION['error'] = "Full name and email are required.";
-
-    header("Location: profile.php");
-    exit();
-}
+    $email = trim($_POST['email']);
 
 
-// ============================
-// PASSWORD UPDATE
-// ============================
-
-if ($password !== '') {
-
-    if ($password !== $confirm_password) {
-
-        $_SESSION['error'] = "Passwords do not match.";
-
-        header("Location: profile.php");
-        exit();
-    }
-
-    $hashedPassword = password_hash(
-        $password,
-        PASSWORD_DEFAULT
-    );
-
-    $query = mysqli_prepare(
+    $stmt = mysqli_prepare(
         $conn,
         "UPDATE users
-         SET fullname=?, email=?, password=?
-         WHERE id=?"
+         SET fullname = ?, email = ?
+         WHERE id = ?"
     );
+
 
     mysqli_stmt_bind_param(
-        $query,
-        "sssi",
-        $fullname,
-        $email,
-        $hashedPassword,
-        $user_id
-    );
-
-
-// ============================
-// NAME + EMAIL ONLY
-// ============================
-
-} else {
-
-    $query = mysqli_prepare(
-        $conn,
-        "UPDATE users
-         SET fullname=?, email=?
-         WHERE id=?"
-    );
-
-    mysqli_stmt_bind_param(
-        $query,
+        $stmt,
         "ssi",
         $fullname,
         $email,
         $user_id
     );
+
+
+    mysqli_stmt_execute($stmt);
+
 }
 
 
-// ============================
-// EXECUTE UPDATE
-// ============================
+/* =========================================================
+   PROFILE PHOTO UPLOAD
+========================================================= */
 
-if (mysqli_stmt_execute($query)) {
+if (
+    isset($_FILES['profile_photo']) &&
+    $_FILES['profile_photo']['error'] === UPLOAD_ERR_OK
+) {
 
-    $_SESSION['success'] = "Profile updated successfully.";
 
-} else {
+    $file = $_FILES['profile_photo'];
 
-    $_SESSION['error'] = "Something went wrong while updating your profile.";
+
+    /* Maximum 5 MB */
+
+    if ($file['size'] > 5 * 1024 * 1024) {
+
+        die("Profile photo must be smaller than 5 MB.");
+
+    }
+
+
+    /* Check actual image */
+
+    $imageInfo = getimagesize(
+        $file['tmp_name']
+    );
+
+
+    if ($imageInfo === false) {
+
+        die("Invalid image file.");
+
+    }
+
+
+    $mime = $imageInfo['mime'];
+
+
+    /* Allowed formats */
+
+    $allowedTypes = [
+
+        "image/jpeg" => "jpg",
+
+        "image/png" => "png",
+
+        "image/webp" => "webp"
+
+    ];
+
+
+    if (!isset($allowedTypes[$mime])) {
+
+        die(
+            "Only JPG, PNG and WEBP images are allowed."
+        );
+
+    }
+
+
+    $extension =
+        $allowedTypes[$mime];
+
+
+    /* =====================================================
+       CREATE UPLOAD DIRECTORY
+    ===================================================== */
+
+    $uploadDir =
+        __DIR__ .
+        "/uploads/profile_photos/";
+
+
+    if (!is_dir($uploadDir)) {
+
+        if (!mkdir(
+            $uploadDir,
+            0777,
+            true
+        )) {
+
+            die(
+                "Unable to create profile photo folder."
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       GET OLD PHOTO
+    ===================================================== */
+
+    $oldStmt = mysqli_prepare(
+        $conn,
+        "SELECT profile_photo
+         FROM users
+         WHERE id = ?"
+    );
+
+
+    mysqli_stmt_bind_param(
+        $oldStmt,
+        "i",
+        $user_id
+    );
+
+
+    mysqli_stmt_execute(
+        $oldStmt
+    );
+
+
+    $oldResult =
+        mysqli_stmt_get_result(
+            $oldStmt
+        );
+
+
+    $oldUser =
+        mysqli_fetch_assoc(
+            $oldResult
+        );
+
+
+    $oldPhoto =
+        $oldUser['profile_photo'] ?? "";
+
+
+    /* =====================================================
+       UNIQUE FILE NAME
+    ===================================================== */
+
+    $fileName =
+        "user_" .
+        $user_id .
+        "_" .
+        time() .
+        "." .
+        $extension;
+
+
+    $destination =
+        $uploadDir .
+        $fileName;
+
+
+    /* =====================================================
+       MOVE FILE
+    ===================================================== */
+
+    if (
+        !move_uploaded_file(
+            $file['tmp_name'],
+            $destination
+        )
+    ) {
+
+        die(
+            "Unable to upload profile photo."
+        );
+
+    }
+
+
+    /* =====================================================
+       DATABASE PATH
+    ===================================================== */
+
+    $photoPath =
+        "uploads/profile_photos/" .
+        $fileName;
+
+
+    /* =====================================================
+       SAVE PHOTO PATH
+    ===================================================== */
+
+    $photoStmt = mysqli_prepare(
+        $conn,
+        "UPDATE users
+         SET profile_photo = ?
+         WHERE id = ?"
+    );
+
+
+    mysqli_stmt_bind_param(
+        $photoStmt,
+        "si",
+        $photoPath,
+        $user_id
+    );
+
+
+    if (
+        !mysqli_stmt_execute(
+            $photoStmt
+        )
+    ) {
+
+        if (is_file($destination)) {
+
+            unlink($destination);
+
+        }
+
+
+        die(
+            "Unable to save profile photo."
+        );
+
+    }
+
+
+    /* =====================================================
+       DELETE OLD PHOTO
+    ===================================================== */
+
+    if (!empty($oldPhoto)) {
+
+        $oldPath =
+            __DIR__ .
+            "/" .
+            $oldPhoto;
+
+
+        if (
+            is_file($oldPath) &&
+            strpos(
+                realpath($oldPath),
+                realpath($uploadDir)
+            ) === 0
+        ) {
+
+            unlink($oldPath);
+
+        }
+
+    }
+
 }
 
 
-// ============================
-// REDIRECT
-// ============================
+/* =========================================================
+   RETURN TO PROFILE
+========================================================= */
 
-header("Location: profile.php");
+header(
+    "Location: profile.php"
+);
+
 exit();
 
 ?>

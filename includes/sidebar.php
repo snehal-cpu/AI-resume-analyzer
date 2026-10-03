@@ -16,49 +16,53 @@
 
     <ul>
 
-        <li>
-            <a href="dashboard.php">
-                <i class="fa-solid fa-house"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
+      <li class="<?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : ''; ?>">
+    <a href="dashboard.php">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+    </a>
+</li>
+
+
+       <li class="<?php echo basename($_SERVER['PHP_SELF']) == 'upload.php' ? 'active' : ''; ?>">
+    <a href="upload.php">
+        <i class="fa-solid fa-upload"></i>
+        <span>Upload Resume</span>
+    </a>
+</li>
+
+
+      <li class="<?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : ''; ?>">
+    <a href="reports.php">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Reports</span>
+    </a>
+</li>
+
+      <li class="<?php echo basename($_SERVER['PHP_SELF']) == 'resume_builder.php' ? 'active' : ''; ?>">
+    <a href="resume_builder.php">
+        <i class="fa-solid fa-file-pen"></i>
+        <span>Resume Builder</span>
+    </a>
+</li>
+
+<li class="<?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">
+    <a href="profile.php">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+    </a>
+</li>
+
+
+       <li class="<?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : ''; ?>">
+    <a href="settings.php">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+    </a>
+</li>
 
         <li>
-            <a href="upload.php">
-                <i class="fa-solid fa-upload"></i>
-                <span>Upload Resume</span>
-            </a>
-        </li>
-
-        <li>
-            <a href="reports.php">
-                <i class="fa-solid fa-chart-column"></i>
-                <span>Reports</span>
-            </a>
-        </li>
-
-        <li>
-            <a href="resume_builder.php">
-                <i class="fa-solid fa-file-pen"></i>
-                <span>Resume Builder</span>
-            </a>
-        </li>
-
-        <li>
-            <a href="profile.php">
-                <i class="fa-solid fa-user"></i>
-                <span>Profile</span>
-            </a>
-        </li>
-
-        <li>
-            <a href="settings.php">
-                <i class="fa-solid fa-gear"></i>
-                <span>Settings</span>
-            </a>
-        </li>
-
-        <li>
+            
             <a href="auth/logout.php" class="logout">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <span>Logout</span>

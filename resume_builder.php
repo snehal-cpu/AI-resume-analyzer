@@ -67,12 +67,11 @@ $email = $user['email'] ?? "";
 
 
 <title>
-AI Resume Builder Result
+AI Resume Builder
 </title>
 
 
-<link href="
-https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
 rel="stylesheet">
 
 
@@ -86,8 +85,731 @@ href="assets/css/resume_builder.css">
 <link rel="stylesheet" href="assets/css/theme.css">
 
 
-</head>
+<style>
 
+/* =====================================================
+   AI RESUME BUILDER - DESIGN
+   Same dark blue + cyan theme
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    font-family: 'Poppins', sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #061426,
+            #102a43
+        );
+
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 250px;
+    height: 100vh;
+
+    padding: 25px 20px;
+
+    background: #071522;
+
+    box-shadow:
+        5px 0 25px rgba(0,0,0,.35);
+
+    z-index: 1000;
+}
+
+
+/* LOGO */
+
+.sidebar .logo {
+    display: flex;
+
+    align-items: center;
+    gap: 10px;
+
+    padding: 5px 10px;
+
+    margin-bottom: 40px;
+
+    font-size: 24px;
+    font-weight: 700;
+
+    color: #ffffff;
+}
+
+.sidebar .logo i {
+    color: #00c6ff;
+    font-size: 25px;
+}
+
+
+/* SIDEBAR MENU */
+
+.sidebar ul {
+    list-style: none;
+
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 14px 16px;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    color: #cbd5e1;
+
+    font-size: 15px;
+    font-weight: 500;
+
+    transition: all .3s ease;
+}
+
+.sidebar ul li a i {
+    width: 22px;
+
+    text-align: center;
+
+    font-size: 17px;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li.active a {
+    background:
+        linear-gradient(
+            135deg,
+            #0066ff,
+            #00c6ff
+        );
+
+    color: #ffffff;
+
+    transform: translateX(3px);
+}
+
+
+/* =====================================================
+   MAIN CONTENT
+===================================================== */
+
+.main {
+    margin-left: 250px;
+
+    min-height: 100vh;
+
+    padding: 30px 40px 60px;
+}
+
+
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+.topbar {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+    margin-bottom: 30px;
+
+    padding: 22px 28px;
+
+    background: rgba(16, 42, 67, .85);
+
+    border: 1px solid rgba(0,198,255,.08);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.25);
+}
+
+.topbar h2 {
+    margin: 0;
+
+    font-size: 28px;
+
+    color: #ffffff;
+}
+
+.topbar p {
+    margin: 6px 0 0;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   PROFILE
+===================================================== */
+
+.profile {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 8px 14px;
+
+    border-radius: 14px;
+
+    background: #071522;
+}
+
+.profile img {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 50%;
+
+    border: 2px solid #00c6ff;
+}
+
+.profile strong {
+    color: #ffffff;
+
+    font-size: 14px;
+}
+
+.profile small {
+    color: #94a3b8;
+
+    font-size: 12px;
+}
+
+
+/* =====================================================
+   WELCOME CARD
+===================================================== */
+
+.welcome-card {
+    position: relative;
+
+    overflow: hidden;
+
+    margin-bottom: 25px;
+
+    padding: 28px 30px;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #102a43,
+            #123654
+        );
+
+    border: 1px solid rgba(0,198,255,.10);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.25);
+}
+
+.welcome-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    right: -70px;
+    top: -90px;
+
+    border-radius: 50%;
+
+    background: rgba(0,198,255,.08);
+}
+
+.welcome-card h3 {
+    margin: 0 0 8px;
+
+    font-size: 22px;
+
+    color: #00c6ff;
+}
+
+.welcome-card p {
+    margin: 0;
+
+    color: #cbd5e1;
+
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   BUILDER CARD
+===================================================== */
+
+.builder-card {
+    margin-bottom: 25px;
+
+    padding: 28px;
+
+    border-radius: 20px;
+
+    background: #102a43;
+
+    border: 1px solid rgba(255,255,255,.04);
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.28);
+
+    transition: transform .3s ease,
+                box-shadow .3s ease;
+}
+
+.builder-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.35);
+}
+
+
+/* CARD HEADING */
+
+.builder-card h3 {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin: 0 0 25px;
+
+    padding-bottom: 14px;
+
+    border-bottom: 1px solid rgba(255,255,255,.08);
+
+    font-size: 20px;
+
+    color: #ffffff;
+}
+
+.builder-card h3 i {
+    color: #00c6ff;
+}
+
+
+/* =====================================================
+   FORM ROW
+===================================================== */
+
+.row {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 22px;
+}
+
+
+/* =====================================================
+   FORM GROUP
+===================================================== */
+
+.col-md-6 {
+    display: flex;
+
+    flex-direction: column;
+}
+
+
+/* LABEL */
+
+label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #cbd5e1;
+
+    font-size: 14px;
+
+    font-weight: 500;
+}
+
+
+/* INPUTS */
+
+.form-control {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    border: 1px solid #29445e;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    background: #071522;
+
+    color: #ffffff;
+
+    font-family: 'Poppins', sans-serif;
+
+    font-size: 14px;
+
+    transition:
+        border-color .3s ease,
+        box-shadow .3s ease,
+        background .3s ease;
+}
+
+.form-control::placeholder {
+    color: #64748b;
+}
+
+.form-control:focus {
+    border-color: #00c6ff;
+
+    background: #081b2c;
+
+    box-shadow:
+        0 0 0 3px rgba(0,198,255,.10);
+}
+
+
+/* TEXTAREA */
+
+textarea.form-control {
+    resize: vertical;
+
+    min-height: 120px;
+
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   EXPERIENCE / EDUCATION BOX
+===================================================== */
+
+.experience-box,
+.education-box {
+    padding: 20px;
+
+    border-radius: 15px;
+
+    background: #071522;
+
+    border: 1px solid rgba(255,255,255,.06);
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 12px 20px;
+
+    font-family: 'Poppins', sans-serif;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        opacity .3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+
+    opacity: .95;
+}
+
+
+/* ADD BUTTON */
+
+.btn-outline-primary {
+    border: 1px solid #00c6ff;
+
+    background: transparent;
+
+    color: #00c6ff;
+}
+
+.btn-outline-primary:hover {
+    background:
+        linear-gradient(
+            135deg,
+            #0066ff,
+            #00c6ff
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 20px rgba(0,198,255,.20);
+}
+
+
+/* SUCCESS BUTTON */
+
+.btn-success {
+    background:
+        linear-gradient(
+            135deg,
+            #0066ff,
+            #00c6ff
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 25px rgba(0,198,255,.18);
+}
+
+
+/* SECONDARY BUTTON */
+
+.btn-secondary {
+    background: #1e293b;
+
+    color: #cbd5e1;
+
+    border: 1px solid #334155;
+}
+
+.btn-secondary:hover {
+    background: #26364a;
+
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   TEMPLATE RADIO BUTTONS
+===================================================== */
+
+.builder-card label input[type="radio"] {
+    accent-color: #00c6ff;
+
+    margin-right: 7px;
+}
+
+.builder-card > label {
+    display: inline-flex;
+
+    align-items: center;
+
+    margin-bottom: 12px;
+
+    padding: 10px 14px;
+
+    border-radius: 10px;
+
+    background: #071522;
+
+    border: 1px solid rgba(255,255,255,.06);
+
+    cursor: pointer;
+
+    transition: .3s;
+}
+
+.builder-card > label:hover {
+    border-color: #00c6ff;
+}
+
+
+/* =====================================================
+   SUBMIT AREA
+===================================================== */
+
+.text-center {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    margin-top: 35px !important;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media screen and (max-width: 1000px) {
+
+    .main {
+        padding: 25px;
+    }
+
+    .topbar {
+        align-items: flex-start;
+    }
+
+    .row {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media screen and (max-width: 768px) {
+
+    .sidebar {
+        position: relative;
+
+        width: 100%;
+
+        height: auto;
+
+        min-height: auto;
+
+        padding: 15px;
+    }
+
+    .sidebar .logo {
+        margin-bottom: 15px;
+    }
+
+    .sidebar ul {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 8px;
+    }
+
+    .sidebar ul li {
+        margin: 0;
+    }
+
+    .sidebar ul li a {
+        padding: 11px;
+
+        font-size: 13px;
+    }
+
+    .main {
+        margin-left: 0;
+
+        padding: 20px 15px 40px;
+    }
+
+    .topbar {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        padding: 20px;
+    }
+
+    .profile {
+        width: 100%;
+    }
+
+    .welcome-card {
+        padding: 22px;
+    }
+
+    .builder-card {
+        padding: 20px;
+    }
+
+}
+
+
+@media screen and (max-width: 500px) {
+
+    .sidebar ul {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar h2 {
+        font-size: 23px;
+    }
+
+    .builder-card h3 {
+        font-size: 18px;
+    }
+
+    .text-center {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .text-center .btn {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+</head>
 
 
 <body>
@@ -222,6 +944,8 @@ Logout
 
 
 
+<!-- TOP BAR -->
+
 <div class="topbar">
 
 
@@ -271,13 +995,13 @@ Create professional ATS friendly resume using AI
 
 </div>
 
-<button id="theme-toggle" class="theme-btn" type="button">
-    <i class="fa-solid fa-moon"></i>
-</button>
 </div>
 
 
 </div>
+<!-- TOPBAR END -->
+
+
 
 
 
@@ -408,6 +1132,8 @@ class="form-control">
 
 
 </div>
+
+
 <!-- =========================
 PROFESSIONAL DETAILS
 ========================= -->
@@ -867,6 +1593,8 @@ Creative
 
 
 </div>
+
+
 <!-- =========================
 SUBMIT BUTTON
 ========================= -->
